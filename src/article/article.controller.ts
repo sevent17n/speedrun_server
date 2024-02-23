@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { GetArticleDto } from './dto/get-articles.dto';
@@ -13,7 +13,7 @@ export class ArticleController {
   }
 
   @Get('get-articles')
-  public async getArticles(@Body() dto: GetArticleDto) {
+  public async getArticles(@Query() dto: GetArticleDto) {
     return this.articleService.getArticles(dto);
   }
 }
