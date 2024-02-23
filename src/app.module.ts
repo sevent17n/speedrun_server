@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { postgresConfig } from './config/postgres.config';
 import { CommentModule } from './comment/comment.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CommentModule } from './comment/comment.module';
       useFactory: postgresConfig,
     }),
     CommentModule,
+    ArticleModule,
   ],
 })
 export class AppModule {}

@@ -1,12 +1,12 @@
+import { Article } from 'src/article/article.model';
 import { Module } from '@nestjs/common';
-import { CommentController } from './comment.controller';
-import { CommentService } from './article.service';
+import { ArticleService } from './article.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Comment } from './comment.model';
+import { ArticleController } from './article.controller';
 
 @Module({
-  providers: [CommentService],
-  controllers: [CommentController],
-  imports: [SequelizeModule.forFeature([Comment])],
+  providers: [ArticleService],
+  controllers: [ArticleController],
+  imports: [SequelizeModule.forFeature([Article])],
 })
-export class CommentModule {}
+export class ArticleModule {}
