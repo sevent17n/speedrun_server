@@ -28,7 +28,7 @@ export class CommentController {
   }
 
   @Patch('update-comment')
-  public async updateComment(@Query() dto: UpdateCommentDto) {
+  public async updateComment(@Body() dto: UpdateCommentDto) {
     return await this.commentService.updateComment(dto);
   }
 

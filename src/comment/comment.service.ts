@@ -74,7 +74,7 @@ export class CommentService {
         const comment = await this.CommentModel.findByPk(dto.comment_id, {
           transaction,
         });
-          
+
         if (!comment) throw new NotAcceptableException('Запись не найдена');
 
         await comment.destroy({ transaction });
