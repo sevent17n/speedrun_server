@@ -6,31 +6,40 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { GetCommentsDto } from './dto/get-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectModel(Comment) private CommentModel: typeof Comment,
     @InjectModel(Article) private ArticleModel: typeof Article,
+    private sequelize: Sequelize,
   ) {}
 
   public async createComment(dto: CreateCommentDto) {
-    try {
-      const article = await this.ArticleModel.findByPk(dto.article_id);
+    return await this.sequelize.transaction(async (transaction) => {
+      try {
+        const article = await this.ArticleModel.findByPk(dto.article_id, {
+          transaction,
+        });
 
-      if (!article) throw new NotAcceptableException('Запись не найдена');
+        if (!article) throw new NotAcceptableException('Запись не найдена');
 
-      await this.CommentModel.create({
-        title: dto.title,
-        content: dto.content,
-        article_id: article?.id,
-      });
+        await this.CommentModel.create(
+          {
+            title: dto.title,
+            content: dto.content,
+            article_id: article?.id,
+          },
+          { transaction },
+        );
 
-      return 'Succesful';
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+        return 'Succesful';
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    });
   }
 
   public async getComments(dto: GetCommentsDto) {
@@ -60,34 +69,43 @@ export class CommentService {
   }
 
   public async deleteComment(dto: DeleteCommentDto) {
-    try {
-      const comment = await this.CommentModel.findByPk(dto.comment_id);
-      if (!comment) throw new NotAcceptableException('Запись не найдена');
+    return await this.sequelize.transaction(async (transaction) => {
+      try {
+        const comment = await this.CommentModel.findByPk(dto.comment_id, {
+          transaction,
+        });
+          
+        if (!comment) throw new NotAcceptableException('Запись не найдена');
 
-      await comment.destroy();
+        await comment.destroy({ transaction });
 
-      return 'Succesful';
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+        return 'Succesful';
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    });
   }
 
   public async updateComment(dto: UpdateCommentDto) {
-    try {
-      const comment = await this.CommentModel.findByPk(dto.comment_id);
+    return await this.sequelize.transaction(async (transaction) => {
+      try {
+        const comment = await this.CommentModel.findByPk(dto.comment_id, {
+          transaction,
+        });
 
-      if (!comment) throw new NotAcceptableException('Запись не найдена');
+        if (!comment) throw new NotAcceptableException('Запись не найдена');
 
-      if (dto.title) comment.title = dto.title;
-      if (dto.content) comment.content = dto.content;
+        if (dto.title) comment.title = dto.title;
+        if (dto.content) comment.content = dto.content;
 
-      await comment.save();
+        await comment.save({ transaction });
 
-      return 'Succesful';
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+        return 'Succesful';
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    });
   }
 }
